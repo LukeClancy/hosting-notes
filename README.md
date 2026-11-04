@@ -1,1 +1,2 @@
-This is a collection of notes related to servers, hosting, and devops
+This is a collection of guides/notes for common servers, hosting, and devops activites.
+- [New Server Startup](./New Server Startup)
