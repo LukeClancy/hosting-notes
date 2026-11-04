@@ -1,0 +1,14 @@
+#!/bin/bash
+
+set -euo pipefail
+cd "$(dirname "$0")"
+
+CADUSER=<put user here>
+CADSERVER=<ip here>
+
+DIR="/home/$CADUSER/basic_caddy"
+LOC="$CADUSER@$CADSERVER:$DIR"
+HOST="$CADUSER@$CADSERVER"
+
+rsync -av --delete --exclude push ./ "$LOC/"
+ssh $HOST "cd $DIR; docker compose up -d --build"

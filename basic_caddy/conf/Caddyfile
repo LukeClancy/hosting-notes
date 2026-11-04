@@ -1,0 +1,21 @@
+# replace <areas like this> with your config
+{
+  acme_dns cloudflare {env.CF_API_TOKEN}
+
+  dynamic_dns {
+		provider cloudflare {env.CF_API_TOKEN}
+		domains {
+			<domain name> @ *
+		}
+		dynamic_domains
+	}
+}
+
+<domain name> {
+    respond "Hello, world!"
+}
+
+# reverse proxy to a domain (caddy handles https and then forwards)
+# <domain name> {
+#  reverse_proxy <container-name>:<port>
+# }

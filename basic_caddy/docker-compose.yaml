@@ -1,0 +1,47 @@
+name: cachyserver
+
+# More info: https://nerdleveltech.com/caddy-reverse-proxy-docker-compose-production-https-tutorial
+
+x-logging: &logging
+  driver: "json-file"
+  options:
+    # 3 ten megabyte files with the oldest one deleted when you hit 4
+    #
+    # article: https://www.dash0.com/guides/docker-compose-logs
+    # tail: docker compose logs <services> --tail 10 --follow
+    # time-particular: docker compose logs --since "2025-11-24T08:00:00" --until "2025-11-24T08:15:00" <services>
+    # time: docker compose logs --since 10m <services>
+    max-size: "10m"
+    max-file: "3"
+
+services:
+  caddy:
+    hostname: caddy
+    container_name: caddy
+    build:
+      context: .
+      dockerfile: Dockerfile
+    env_file: ".env"
+    restart: always
+    ports:
+      - 80:80
+      - 443:443
+      - 443:443/udp
+    logging: *logging
+    volumes:
+      - ./conf:/etc/caddy
+      - caddy_data:/data
+      - caddy_config:/config
+
+volumes:
+  caddy_data:
+  caddy_config:
+
+# To connect to other containers/apps:
+# create a caddy network and set as default for caddy and the app
+# (by default docker bypasses ufw so exposing to 0.0.0.0 is problematic).
+# 
+# networks:
+#   default:
+#     name: caddy
+#     external: true
