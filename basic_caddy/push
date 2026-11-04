@@ -10,5 +10,6 @@ DIR="/home/$CADUSER/basic_caddy"
 LOC="$CADUSER@$CADSERVER:$DIR"
 HOST="$CADUSER@$CADSERVER"
 
+# install rsync
 rsync -av --delete --exclude push ./ "$LOC/"
 ssh $HOST "cd $DIR; docker compose up -d --build"
