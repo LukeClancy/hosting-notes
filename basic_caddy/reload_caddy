@@ -1,0 +1,20 @@
+#!/bin/bash
+
+set -euo pipefail
+cd "$(dirname "$0")"
+
+USER=<user here>
+SERVER=<server here>
+DIR=/home/$USER/basic-caddy
+LOC="$USER@$SERVER:$DIR"
+HOST="$USER@$SERVER"
+
+# push updated Caddyfile to server
+scp ./conf/Caddyfile "$LOC/conf/Caddyfile"\
+
+# find running caddy container and reload config with zero downtime
+ssh $HOST "
+  cd $DIR;
+  docker compose exec -w /etc/caddy caddy caddy reload
+"
+echo "-- caddy reloaded --"

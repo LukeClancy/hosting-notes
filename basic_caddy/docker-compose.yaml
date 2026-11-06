@@ -1,4 +1,4 @@
-name: cachyserver
+name: basic-caddy
 
 # More info: https://nerdleveltech.com/caddy-reverse-proxy-docker-compose-production-https-tutorial
 
