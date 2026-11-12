@@ -1,7 +1,22 @@
-This is a basic startup guide for creating a reasonably secure at-home server with a DNS connection and file backup
+This is a basic startup guide for creating a reasonably secure at-home server with a DNS connection and file backup.
+
+In order we will be:
+1. Creating a usb with install media
+2. Setting up a secure ssh connection
+3. Stopping the computer from going to sleep or stopping (run the server forever)
+4. Setting up syncthing
+5. setting up docker & friends
+6. explaining cloudflare / DNS
+7. Setting up caddy
+
+
+Here is a diagram to help visualize the network result of what we will be doing:
+
+![infrastructure diagram](./infra.drawio.png)
+
 ## Create USB
 - Ventoy install
-	- [ventory website](https://www.ventoy.net/en/download.html)
+	- [ventoy website](https://www.ventoy.net/en/download.html)
 	- download
 	- verify hash: `sha256sum ./ventoy-1.1.18-linux.tar.gz`
 	- extract: `tar -xf ventoy-1.1.18-linux.tar.gz`
@@ -48,7 +63,7 @@ HandleHibernateKey=ignore
 ## Double check ports
 - `ss -tlnp`
 - note docker will go around firewalls if you put something on 0.0.0.0
-## install syncthing
+## Setup syncthing
 - may also want to consider rsync
 - both computers: `pacman -S syncthing && systemctl --user enable --now syncthing.service`
 - if it fails: See section "How to set up a user service" [here](https://docs.syncthing.net/users/autostart.html#linux)
@@ -56,7 +71,7 @@ HandleHibernateKey=ignore
 	- your machines settings are now viewable on `http://<ip>:8384` and the servers is on `http://<ip>:8385` so you can set it up.
 	- recommend: using .stignore and two backups. An encrypted-on-server folder-sync shared between multiple non-server computers. A non-encrypted-on-server folder-sync.
 	- recommend: staggered file versioning.
-## Install docker & friends:
+## Setup docker & friends:
 - May need to turn on virtualization in the BIOS
 - `pacman -S docker docker-buildx docker-compose && systemctl enable --now docker`
 - Add yourself to the docker user group: `usermod -aG docker <user>`. May need to create the docker group `groupadd docker`
@@ -75,9 +90,9 @@ HandleHibernateKey=ignore
 			- `systemctl restart NetworkManager`
 - Once this is working you should be able to ssh in using the url.
 - Will go more into docker and caddy later.
-## Additional Security
+## Additional: Automatic Updates
 - I have seen recommendations on arch forums that all updates should be run manually. That seems a bit much.
-- With [black october](https://en.wikipedia.org/wiki/Black_October_(information_security)) and other vulnerabilities found by AI, I recommend automatic updateing to get patches quickly.
+- With [black october](https://en.wikipedia.org/wiki/Black_October_(information_security)) and other vulnerabilities found by AI, I recommend automatic updating to get patches quickly.
 - [Source](https://www.reddit.com/r/archlinux/comments/o87muy/one_year_of_unattended_updates_yielded_9996/)
 - create script: `/root/bin/auto-update.sh` (then `chmod +x /root/bin/auto-update.sh`):
 ```bash
@@ -116,3 +131,11 @@ systemctl daemon-reload
 systemctl enable --now auto-update.timer
 ```
 - finally: keep an eye out for that log file!
+
+## Additional: Timeout Screen
+IN PROGRESS: my screen has decided to continually be on.
+
+- To automatically turn off screen after a certain amount of time but have it reactivate on a button:
+- See "Automatically blankscreen tty1" [here](https://wiki.archlinux.org/title/Display_Power_Management_Signaling)
+- `systemctl edit autovt@.service --drop-in=screen-timeout`
+- Add: `ExecStart=/usr/bin/setterm -blank 15 -powerdown 20`
