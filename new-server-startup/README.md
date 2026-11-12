@@ -14,6 +14,8 @@ Here is a diagram to help visualize the network result of what we will be doing:
 
 ![infrastructure diagram](./infra.drawio.png)
 
+![yt video](https://www.youtube.com/watch?v=p87znFE7Z_U)
+
 ## Create USB
 - Ventoy install
 	- [ventoy website](https://www.ventoy.net/en/download.html)
